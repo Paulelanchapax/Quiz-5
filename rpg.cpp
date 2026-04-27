@@ -169,6 +169,100 @@ return 0;
 
 //Bloque 2
 
+#include <iostream>
+#include <string>
+
+using namespace std;
+class Personaje {
+public:
+// Constructor con lista de inicializacion
+Personaje(string nombre, int vida, int nivel)
+: nombre_(nombre), // asigna el parametro 'nombre' al atributo nombre_
+vida_(vida),
+nivel_(nivel) {}
+void mostrar() const { // const: este metodo no modifica el objeto
+cout << "[" << nivel_ << "] " << nombre_
+<< " HP: " << vida_ << endl;
+}
+
+// Getters: acceso de lectura a atributos protegidos
+string getNombre() const { return nombre_; }
+int getVida() const { return vida_; }
+int getNivel() const { return nivel_; }
+// Destructor -- lo convertiremos en virtual en el Bloque 4
+~Personaje() {}
+protected: // accesible desde esta clase Y desde sus clases hijas (Bloque 2)
+string nombre_;
+int vida_;
+int nivel_;
+}; // <-- punto y coma obligatorio
+
+class Guerrero : public Personaje { // hereda de Personaje
+public:
+Guerrero(string nombre, int vida, int nivel,
+string arma, int fuerza)
+: Personaje(nombre, vida, nivel), // inicializa la parte Personaje primero
+arma_(arma),
+fuerza_(fuerza) {}
+void info_guerrero() const {
+cout << " Arma : " << arma_ << endl;
+cout << " Fuerza: " << fuerza_ << endl;
+}
+
+private:
+string arma_;
+int fuerza_;
+};
+
+class Mago : public Personaje {
+public:
+Mago(string nombre, int vida, int nivel,
+string escuela, int mana)
+: Personaje(nombre, vida, nivel), // inicializa la parte Personaje
+escuela_(escuela),
+mana_(mana) {}
+void info_mago() const {
+cout << " Escuela: " << escuela_ << endl;
+cout << " Mana : " << mana_ << endl;
+}
+private:
+string escuela_;
+int mana_;
+};
+
+int main() {
+Guerrero g("Thorin", 100, 5, "Hacha de Guerra", 42);
+g.mostrar(); // HEREDADO de Personaje -- no lo escribiste en Guerrero
+g.info_guerrero(); // PROPIO de Guerrero
+cout << endl;
+Mago m("Elara", 75, 7, "Fuego", 120);
+m.mostrar(); // HEREDADO de Personaje
+
+m.info_mago(); // PROPIO de Mago
+
+Guerrero h("Ragnar", 120, 8, "Espada Runa", 58);
+g.mostrar();
+g.info_guerrero();
+
+Mago n("Seraphina", 60, 9, "Hielo", 200);
+m.mostrar();
+m.info_mago();
+
+
+return 0;
+}
+
+//CHEKPOINTTT 3!
+
+//g mostrar si muestra a info del personaje guerrero sin que este ahi dentro escrito
+//El constructor guerrero va de la mano con personaje, al inicializarlo
+//Si se cambia el nombre porque no esta en private el guerrero a nombre
+//Guerrero y Mago comparten mostrar al ser de la misma clase, si funciona :D
+
+
+
+
+
 
 
 
