@@ -260,7 +260,7 @@ return 0;
 //Guerrero y Mago comparten mostrar al ser de la misma clase, si funciona :D
 
 
-*/
+
 
 
 //Bloque 3
@@ -379,8 +379,126 @@ return 0;
 //[ X] El Aldeano usa la version base porque es Personaje puro sin override
 //[ X] nombre_ es accesible en atacar() de Guerrero porque esta en protected:
 
+*/
 
 //Bloque 4
+
+
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+class Personaje {
+public:
+// Constructor con lista de inicializacion
+Personaje(string nombre, int vida, int nivel)
+: nombre_(nombre), // asigna el parametro 'nombre' al atributo nombre_
+vida_(vida),
+nivel_(nivel) {}
+void mostrar() const { // const: este metodo no modifica el objeto
+cout << "[" << nivel_ << "] " << nombre_
+<< " HP: " << vida_ << endl;
+}
+
+// Getters: acceso de lectura a atributos protegidos
+string getNombre() const { return nombre_; }
+int getVida() const { return vida_; }
+int getNivel() const { return nivel_; }
+
+
+// Agrega en class Personaje, seccion public:, antes de ~Personaje()
+virtual void atacar() const {
+cout << nombre_ << " ataca de forma basica." << endl;
+}
+
+
+// En class Personaje, reemplaza el destructor por:
+virtual ~Personaje() {}
+protected: // accesible desde esta clase Y desde sus clases hijas (Bloque 2)
+string nombre_;
+int vida_;
+int nivel_;
+}; // <-- punto y coma obligatorio
+
+class Guerrero : public Personaje { // hereda de Personaje
+public:
+Guerrero(string nombre, int vida, int nivel,
+string arma, int fuerza)
+: Personaje(nombre, vida, nivel), // inicializa la parte Personaje primero
+arma_(arma),
+fuerza_(fuerza) {}
+
+
+// Agrega en class Guerrero, seccion public:
+void atacar() const override {
+cout << nombre_ << " golpea con " << arma_ << endl;
+cout << " Dano fisico: " << fuerza_ * 2 << endl;
+}
+
+
+
+
+void info_guerrero() const {
+cout << " Arma : " << arma_ << endl;
+cout << " Fuerza: " << fuerza_ << endl;
+}
+
+private:
+string arma_;
+int fuerza_;
+};
+
+class Mago : public Personaje {
+public:
+Mago(string nombre, int vida, int nivel,
+string escuela, int mana)
+: Personaje(nombre, vida, nivel), // inicializa la parte Personaje
+escuela_(escuela),
+mana_(mana) {}
+void info_mago() const {
+cout << " Escuela: " << escuela_ << endl;
+cout << " Mana : " << mana_ << endl;
+}
+
+void atacar() const override {
+cout << nombre_ << " lanza echizo de " << escuela_ << endl;
+cout <<"Danio magico: [ "<<mana_/2<<" ] "<< endl;
+}
+
+
+private:
+string escuela_;
+int mana_;
+};
+
+int main() {
+vector<Personaje*> partida;
+partida.push_back(new Personaje("Aldeano", 30, 1)); // Personaje: "Aldeano", 30, 1
+partida.push_back(new Guerrero("Thorin", 100, 5, "Hacha de Guerra", 42)); // Guerrero: "Thorin", 100, 5, "Hacha de Guerra", 42
+partida.push_back(new Mago("Elara", 75, 7, "Fuego", 120)); // Mago: "Elara", 75, 7, "Fuego", 120
+partida.push_back(new Guerrero("Ragnar", 120, 8, "Espada Runa", 58)); // Guerrero: "Ragnar", 120, 8, "Espada Runa", 58
+cout << "=== RONDA DE COMBATE ===" << endl;
+for (Personaje* p : partida) {
+p->mostrar(); // dispatch virtual -- ejecuta mostrar() de Personaje
+p->atacar(); // dispatch virtual -- cada objeto responde a su manera
+cout << endl;
+}
+// Liberar memoria: delete activa el destructor virtual correcto
+for (Personaje* p : partida) delete p;
+return 0;
+}
+
+//corremos el programa y si funciona
+
+//Checkpoint 4!!!
+
+
+//[X] El bucle for llama a atacar() sin saber el tipo real -- polimorfismo en accion
+//[X] Entiendes la diferencia entre vector<Personaje> (slicing) y vector<Personaje*>
+//[X] El destructor virtual garantiza que se ejecute el destructor correcto al hacer delete
+//[X] No hay ningun if/else para distinguir tipos -- el dispatch virtual lo resuelve
+
 
 
 
