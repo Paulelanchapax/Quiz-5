@@ -165,7 +165,7 @@ return 0;
 //entiendo que si los pongo en public a los atributos cualquiera puede cambiarlos por eso van en protected
 //const hace que no se modifique el objeto.
 
-*/
+
 
 //Bloque 2
 
@@ -260,9 +260,127 @@ return 0;
 //Guerrero y Mago comparten mostrar al ser de la misma clase, si funciona :D
 
 
+*/
+
+
+//Bloque 3
+
+#include <iostream>
+#include <string>
+
+using namespace std;
+class Personaje {
+public:
+// Constructor con lista de inicializacion
+Personaje(string nombre, int vida, int nivel)
+: nombre_(nombre), // asigna el parametro 'nombre' al atributo nombre_
+vida_(vida),
+nivel_(nivel) {}
+void mostrar() const { // const: este metodo no modifica el objeto
+cout << "[" << nivel_ << "] " << nombre_
+<< " HP: " << vida_ << endl;
+}
+
+// Getters: acceso de lectura a atributos protegidos
+string getNombre() const { return nombre_; }
+int getVida() const { return vida_; }
+int getNivel() const { return nivel_; }
+
+
+// Agrega en class Personaje, seccion public:, antes de ~Personaje()
+virtual void atacar() const {
+cout << nombre_ << " ataca de forma basica." << endl;
+}
 
 
 
+
+// Destructor -- lo convertiremos en virtual en el Bloque 4
+~Personaje() {}
+protected: // accesible desde esta clase Y desde sus clases hijas (Bloque 2)
+string nombre_;
+int vida_;
+int nivel_;
+}; // <-- punto y coma obligatorio
+
+class Guerrero : public Personaje { // hereda de Personaje
+public:
+Guerrero(string nombre, int vida, int nivel,
+string arma, int fuerza)
+: Personaje(nombre, vida, nivel), // inicializa la parte Personaje primero
+arma_(arma),
+fuerza_(fuerza) {}
+
+
+// Agrega en class Guerrero, seccion public:
+void atacar() const override {
+cout << nombre_ << " golpea con " << arma_ << endl;
+cout << " Dano fisico: " << fuerza_ * 2 << endl;
+}
+
+
+
+
+void info_guerrero() const {
+cout << " Arma : " << arma_ << endl;
+cout << " Fuerza: " << fuerza_ << endl;
+}
+
+private:
+string arma_;
+int fuerza_;
+};
+
+class Mago : public Personaje {
+public:
+Mago(string nombre, int vida, int nivel,
+string escuela, int mana)
+: Personaje(nombre, vida, nivel), // inicializa la parte Personaje
+escuela_(escuela),
+mana_(mana) {}
+void info_mago() const {
+cout << " Escuela: " << escuela_ << endl;
+cout << " Mana : " << mana_ << endl;
+}
+
+void atacar() const override {
+cout << nombre_ << " lanza echizo de " << escuela_ << endl;
+cout <<"Danio magico: [ "<<mana_/2<<" ] "<< endl;
+}
+
+
+private:
+string escuela_;
+int mana_;
+};
+
+int main() {
+Personaje p("Aldeano", 30, 1);
+Guerrero g("Thorin", 100, 5, "Hacha de Guerra", 42);
+p.atacar(); // version base del padre
+g.atacar(); // override de Guerrero
+
+Mago m("Elara", 75, 7, "Fuego", 120);
+m.atacar();
+
+
+return 0;
+}
+
+//comprobamos el override y si funciona, ahora vamos con mago
+
+
+//Funciona correctamente.
+
+//Checkpoint 3!!!
+
+//[ X] Cada clase ejecuta su propia version de atacar()
+//[ X] 'virtual' en Personaje y 'override' en los hijos -- ambos son necesarios
+//[ X] El Aldeano usa la version base porque es Personaje puro sin override
+//[ X] nombre_ es accesible en atacar() de Guerrero porque esta en protected:
+
+
+//Bloque 4
 
 
 
